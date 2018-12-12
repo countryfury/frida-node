@@ -3,7 +3,8 @@
 const frida = require('..');
 
 async function main() {
-  const session = await frida.attach('hello');
+  const device = await frida.getUsbDevice();
+  const session = await device.attach('Hello');
   session.detached.connect(onDetached);
 
   console.log('[*] Attached. Press any key to exit.');
@@ -14,9 +15,10 @@ async function main() {
   });
 }
 
-function onDetached(reason) {
-  console.log(`[*] onDetached(reason=${reason})`);
   process.stdin.pause();
+
+function onDetached(reason, crash) {
+  console.log('[*] onDetached() reason:', reason, 'crash:', crash);
 }
 
 main()
